@@ -211,8 +211,9 @@ public class EnemyMovement : MonoBehaviour {
 		float distToPlayerX = Mathf.Abs(playerPos.transform.position.x - transform.position.x);
 		float distToPlayerZ = Mathf.Abs(playerPos.transform.position.z - transform.position.z);
 
-		if (((distToWallX > distToPlayerX) && (distToPlayerZ <= 0.5f)) ||
-			((distToWallZ > distToPlayerZ) && (distToPlayerX <= 0.5f))) {
+		bool facingPlayer = IsFacingPlayer ();
+		if ((facingPlayer &&((distToWallX > distToPlayerX) && (distToPlayerZ <= 0.25f))) ||
+			(facingPlayer && ((distToWallZ > distToPlayerZ) && (distToPlayerX <= 0.25f)))) {
 			isWalking = false;
 
 			// Roar if appropriate
@@ -226,6 +227,24 @@ public class EnemyMovement : MonoBehaviour {
 		}
 
 		//Debug.Log (playerPos.transform.position);
+	}
+
+	private bool IsFacingPlayer() {
+		bool facingPlayer = false;
+		if (info.directionFacing == MazeDirection.North && playerPos.transform.position.z > transform.position.z) {
+			facingPlayer = true;
+		}
+		if (info.directionFacing == MazeDirection.South && playerPos.transform.position.z < transform.position.z) {
+			facingPlayer = true;
+		}
+		if (info.directionFacing == MazeDirection.East && playerPos.transform.position.x > transform.position.x) {
+			facingPlayer = true;
+		}
+		if (info.directionFacing == MazeDirection.West && playerPos.transform.position.x < transform.position.x) {
+			facingPlayer = true;
+		}
+
+		return facingPlayer;
 	}
 
 	// Gets the maze
@@ -296,6 +315,7 @@ public class EnemyMovement : MonoBehaviour {
 
 	// get the direction clockwise from where you are
 	private MazeDirection rotateClockwise (MazeDirection dir) {
+		transform.Rotate (new Vector3 (0.0f, 90.0f));
 		if (dir == MazeDirection.North) {
 			return MazeDirection.East;
 		} else if (dir == MazeDirection.East) {
@@ -309,6 +329,7 @@ public class EnemyMovement : MonoBehaviour {
 
 	// get the direction counterClockwise from where you are
 	private MazeDirection rotateCounterClockwise (MazeDirection dir) {
+		transform.Rotate (new Vector3 (0.0f, -90.0f));
 		if (dir == MazeDirection.North) {
 			return MazeDirection.West;
 		} else if (dir == MazeDirection.East) {
